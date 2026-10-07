@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>TETRIS // MATRIX - Arcade Mobile</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-fixed": "#291800",
+            "surface-bright": "#393844",
+            "inverse-on-surface": "#302f3b",
+            "surface-container-highest": "#34343f",
+            "surface-container-low": "#1b1b25",
+            "secondary-container": "#a001f0",
+            "surface": "#12121d",
+            "inverse-primary": "#006a6a",
+            "on-primary-fixed-variant": "#004f4f",
+            "on-primary-fixed": "#002020",
+            "on-secondary": "#4e0078",
+            "on-tertiary-fixed-variant": "#633f00",
+            "secondary-fixed-dim": "#e4b5ff",
+            "background": "#12121d",
+            "surface-container-lowest": "#0d0d17",
+            "on-tertiary": "#452b00",
+            "primary-fixed-dim": "#00dddd",
+            "surface-container": "#1f1f29",
+            "on-primary-container": "#006969",
+            "on-surface-variant": "#b9cac9",
+            "primary": "#c7fffe",
+            "primary-fixed": "#2cfbfb",
+            "on-surface": "#e4e1f0",
+            "tertiary": "#fff2e6",
+            "on-error": "#690005",
+            "error-container": "#93000a",
+            "on-error-container": "#ffdad6",
+            "inverse-surface": "#e4e1f0",
+            "secondary-fixed": "#f4d9ff",
+            "on-secondary-container": "#f7e1ff",
+            "on-secondary-fixed-variant": "#6f00a9",
+            "tertiary-container": "#ffd092",
+            "tertiary-fixed-dim": "#ffb952",
+            "surface-dim": "#12121d",
+            "outline": "#849493",
+            "tertiary-fixed": "#ffddb3",
+            "on-background": "#e4e1f0",
+            "on-tertiary-container": "#815400",
+            "on-secondary-fixed": "#2f004b",
+            "error": "#ffb4ab",
+            "surface-variant": "#34343f",
+            "secondary": "#e4b5ff",
+            "surface-container-high": "#292934",
+            "outline-variant": "#3a4a49",
+            "on-primary": "#003737",
+            "surface-tint": "#00dddd",
+            "primary-container": "#00f0f0"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1.25rem",
+            "gutter-mobile": "0.5rem",
+            "space-md": "0.75rem",
+            "space-xl": "2rem",
+            "margin-mobile": "0.75rem",
+            "gutter": "0.75rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "margin": "1.25rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Space Mono"],
+            "headline-lg-mobile": ["Space Mono"],
+            "headline-xl": ["Space Mono"],
+            "body-md": ["Space Grotesk"],
+            "label-sm": ["Space Mono"],
+            "label-lg": ["Space Mono"],
+            "headline-md": ["Space Grotesk"],
+            "headline-xl-mobile": ["Space Mono"],
+            "body-lg": ["Space Grotesk"],
+            "label-md": ["Space Mono"]
+          },
+          "fontSize": {
+            "headline-lg": ["30px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-lg-mobile": ["22px", {"lineHeight": "26px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-xl": ["40px", {"lineHeight": "44px", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "label-sm": ["9px", {"lineHeight": "12px", "letterSpacing": "0.15em", "fontWeight": "400"}],
+            "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700"}],
+            "headline-md": ["20px", {"lineHeight": "24px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+            "headline-xl-mobile": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.03em", "fontWeight": "700"}],
+            "body-lg": ["16px", {"lineHeight": "22px", "fontWeight": "500"}],
+            "label-md": ["11px", {"lineHeight": "14px", "letterSpacing": "0.12em", "fontWeight": "700"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Phosphor scanline texture */
+    .scanlines {
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.45) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+      );
+      background-size: 100% 3px, 3px 100%;
+      pointer-events: none;
+    }
+    .neon-text-glow {
+      text-shadow: 0 0 6px rgba(0, 240, 240, 0.8), 0 0 16px rgba(0, 240, 240, 0.4);
+    }
+    .neon-magenta-glow {
+      text-shadow: 0 0 6px rgba(228, 181, 255, 0.9), 0 0 18px rgba(160, 1, 240, 0.6);
+    }
+    /* Cell styling */
+    .mino {
+      position: relative;
+      border-radius: 2px;
+    }
+    .mino::before {
+      content: '';
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      right: 1px;
+      height: 35%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.05) 100%);
+      border-radius: 1px;
+    }
+    .mino::after {
+      content: '';
+      position: absolute;
+      inset: 1px;
+      box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.8);
+      border-radius: 1px;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    /* ===== Juego: celdas, overlay y banner ===== */
+    #board { display: grid; grid-template-columns: repeat(10, 20px); grid-auto-rows: 20px; }
+    .c { width: 20px; height: 20px; box-sizing: border-box; }
+    .c.f { background: var(--c); border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 0 6px var(--c); }
+    .c.g { border: 2px dashed var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); opacity: 0.7; border-radius: 2px; }
+    .c.fl { background: #fff; box-shadow: 0 0 14px #00f0f0; }
+
+    .ov {
+      position: absolute; inset: 0; z-index: 40;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px; padding: 12px; text-align: center;
+      background: rgba(7, 7, 15, 0.86); backdrop-filter: blur(2px);
+      font-family: 'Space Mono', monospace;
+    }
+    .ov.hide { display: none; }
+    .ov-title { font-weight: 700; font-size: 16px; letter-spacing: -0.02em; color: #c7fffe;
+      text-shadow: 0 0 6px rgba(0, 240, 240, 0.8), 0 0 16px rgba(0, 240, 240, 0.4); }
+    .ov-sub { font-size: 9px; line-height: 14px; letter-spacing: 0.1em; color: #b9cac9; }
+    .ov-btn {
+      padding: 8px 22px; border-radius: 8px; border: 2px solid #2cfbfb; background: #1f1f29; color: #c7fffe;
+      font-family: 'Space Mono', monospace; font-weight: 700; font-size: 13px; letter-spacing: 0.1em;
+      box-shadow: 0 3px 0 #05060b, 0 0 14px rgba(0, 240, 240, 0.3);
+      transition: transform 0.08s, box-shadow 0.08s;
+    }
+    .ov-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #05060b, 0 0 20px #00f0f0; }
+
+    .banner {
+      position: absolute; left: 0; right: 0; top: 42%; height: 20px; z-index: 30; pointer-events: none;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0, 240, 240, 0.4); border-top: 1px solid #2cfbfb; border-bottom: 1px solid #2cfbfb;
+      box-shadow: 0 0 14px #00f0f0;
+      font-family: 'Space Mono', monospace; font-weight: 700; font-size: 9px; letter-spacing: 0.15em; color: #c7fffe;
+      text-shadow: 0 0 8px #fff;
+      opacity: 0; transition: opacity 0.12s;
+    }
+    .banner.show { opacity: 1; }
+
+    button { touch-action: manipulation; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body-md select-none overflow-x-hidden antialiased flex flex-col justify-between min-h-screen">
+<!-- Scanline CRT Simulation Layer -->
+<div class="fixed inset-0 scanlines z-40"></div>
+<!-- Ambient Cyber Background Grid Glow -->
+<div class="fixed inset-0 pointer-events-none opacity-30 z-0">
+<div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-secondary-container/20 via-surface-container-lowest to-surface-container-lowest"></div>
+</div>
+<!-- Shared Component: TopAppBar -->
+<!-- EXACT json adherence: style_shell_layout, style_bg_color, style_separation_logic, style_shadows_and_elevation -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile py-2 max-w-md mx-auto bg-surface-container-lowest/80 dark:bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant/30 dark:border-outline-variant/30 shadow-[0_4px_20px_rgba(0,240,240,0.15)]">
+<!-- Leading Action: Pause -->
+<button id="btnPause" aria-label="Pause Game" class="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container/60 border border-outline-variant/50 text-primary hover:text-primary-fixed hover:bg-surface-container/60 active:scale-95 transition-all duration-150">
+<span id="pauseIcon" class="material-symbols-outlined text-[18px]">pause</span>
+</button>
+<!-- Center Headline & High Score Banner -->
+<div class="flex flex-col items-center">
+<h1 class="text-headline-lg-mobile font-headline-lg-mobile text-primary dark:text-primary tracking-wider neon-text-glow leading-none">
+        TETRIS // MATRIX
+      </h1>
+<div class="flex items-center space-x-1 mt-0.5">
+<span class="text-label-sm font-label-sm text-on-surface-variant">TOP:</span>
+<span class="text-label-sm font-label-sm text-tertiary-fixed font-bold tracking-wider drop-shadow-[0_0_6px_rgba(255,208,146,0.6)]" id="top">000,000</span>
+</div>
+</div>
+<!-- Trailing Action: Volume -->
+<button id="btnSound" aria-label="Toggle Sound" class="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container/60 border border-outline-variant/50 text-primary hover:text-primary-fixed hover:bg-surface-container/60 active:scale-95 transition-all duration-150">
+<span id="soundIcon" class="material-symbols-outlined text-[18px]">volume_up</span>
+</button>
+</header>
+<!-- Mobile Viewport Canvas (~390px centered) -->
+<main class="relative z-10 w-full max-w-md mx-auto pt-14 pb-24 px-2 flex flex-col flex-1 justify-between">
+<!-- Play Zone: Left 10x20 Matrix + Right Cyber HUD -->
+<div class="flex flex-row justify-between items-start gap-2 mt-1">
+<!-- LEFT: The 10x20 Tetris Matrix -->
+<div class="relative bg-surface-container-lowest/90 rounded-lg p-1.5 border border-primary/20 shadow-[inset_0_0_24px_rgba(0,0,0,0.95),_inset_0_0_2px_rgba(0,240,240,0.3)]">
+<!-- Decorative neon corner brackets -->
+<div class="absolute -top-1 -left-1 w-2.5 h-2.5 border-t-2 border-l-2 border-primary-fixed"></div>
+<div class="absolute -top-1 -right-1 w-2.5 h-2.5 border-t-2 border-r-2 border-primary-fixed"></div>
+<div class="absolute -bottom-1 -left-1 w-2.5 h-2.5 border-b-2 border-l-2 border-primary-fixed"></div>
+<div class="absolute -bottom-1 -right-1 w-2.5 h-2.5 border-b-2 border-r-2 border-primary-fixed"></div>
+<!-- 10x20 Matrix Playing Field -->
+<!-- Fixed grid width and aspect ratio for pixel-perfect arcade block representation -->
+<div class="relative w-[202px] h-[402px] bg-[#07070f] border border-outline-variant/40 overflow-hidden flex flex-col justify-between">
+<div class="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,240,240,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,240,240,0.08)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none"></div>
+<div id="board" class="absolute left-0 top-0 z-10"></div>
+<div id="banner" class="banner"></div>
+<div id="overlay" class="ov">
+<div id="ovTitle" class="ov-title">TETRIS // MATRIX</div>
+<div id="ovSub" class="ov-sub"></div>
+<button id="ovBtn" class="ov-btn">START</button>
+</div>
+</div>
+</div>
+<!-- RIGHT: Cyber Arcade HUD Column -->
+<div class="flex-1 flex flex-col gap-2">
+<!-- NEXT PIECE MODULE -->
+<div class="relative bg-surface-container-low/80 backdrop-blur-md border border-primary/25 rounded-lg p-2 shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-1 mb-1.5">
+<span class="text-label-sm font-label-sm text-primary tracking-widest font-bold">NEXT</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+</div>
+<!-- 4x2 preview box showing Cyan I-Tetromino -->
+<div class="h-10 flex items-center justify-center bg-surface-container-lowest/90 rounded border border-outline-variant/20">
+<div id="nextPreview"></div>
+</div>
+</div>
+<!-- HOLD PIECE MODULE -->
+<div class="relative bg-surface-container-low/80 backdrop-blur-md border border-primary/20 rounded-lg p-2 shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-1 mb-1.5">
+<span class="text-label-sm font-label-sm text-on-surface-variant tracking-widest">HOLD</span>
+<span class="text-[8px] font-label-sm text-outline-variant" id="holdState">READY</span>
+</div>
+<!-- Preview box showing Yellow O-Tetromino -->
+<div class="h-10 flex items-center justify-center bg-surface-container-lowest/90 rounded border border-outline-variant/20">
+<div id="holdPreview"></div>
+</div>
+</div>
+<!-- SCORE METRIC -->
+<div class="relative bg-surface-container-low/80 backdrop-blur-md border border-outline-variant/40 rounded-lg p-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant block mb-0.5">SCORE</span>
+<div class="text-headline-md font-headline-md text-on-surface font-bold tracking-tight text-right text-primary-fixed-dim drop-shadow-[0_0_8px_rgba(0,221,221,0.5)]">
+            <span id="score">000,000</span>
+          </div>
+</div>
+<!-- LINES METRIC -->
+<div class="relative bg-surface-container-low/80 backdrop-blur-md border border-outline-variant/40 rounded-lg p-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant block mb-0.5">LINES</span>
+<div class="text-headline-md font-headline-md text-on-surface font-bold tracking-tight text-right text-secondary-fixed-dim drop-shadow-[0_0_8px_rgba(228,181,255,0.4)]">
+            <span id="lines">0</span>
+          </div>
+</div>
+<!-- LEVEL METRIC -->
+<div class="relative bg-surface-container-low/80 backdrop-blur-md border border-primary/30 rounded-lg p-2 shadow-[0_0_10px_rgba(0,240,240,0.1)]">
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-primary font-bold">LEVEL</span>
+<span class="text-label-sm font-label-sm text-primary px-1 bg-primary/10 rounded" id="speedTag">SLOW</span>
+</div>
+<div class="text-headline-lg-mobile font-headline-lg-mobile text-primary font-bold tracking-wider text-right neon-text-glow">
+            <span id="level">01</span>
+          </div>
+</div>
+</div>
+</div>
+<!-- BOTTOM ARCADE TOUCH GAMEPAD CONTROLS -->
+<div class="mt-3 bg-surface-container-low/95 rounded-xl p-2.5 border border-outline-variant/40 shadow-[0_-4px_20px_rgba(0,0,0,0.8)]">
+<div class="flex items-center justify-between gap-2">
+<!-- LEFT CLUSTER: D-Pad Directional Controls -->
+<div class="flex flex-col items-center gap-1.5 flex-1">
+<div class="flex gap-2">
+<!-- Left Arrow Button -->
+<button data-act="left" class="w-12 h-12 bg-surface-container rounded-lg border border-primary/40 flex items-center justify-center text-primary shadow-[0_3px_0_#05060b,_inset_0_1px_1px_rgba(255,255,255,0.3)] active:translate-y-0.5 active:shadow-[0_1px_0_#05060b,_0_0_12px_#00f0f0] transition-all">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<!-- Right Arrow Button -->
+<button data-act="right" class="w-12 h-12 bg-surface-container rounded-lg border border-primary/40 flex items-center justify-center text-primary shadow-[0_3px_0_#05060b,_inset_0_1px_1px_rgba(255,255,255,0.3)] active:translate-y-0.5 active:shadow-[0_1px_0_#05060b,_0_0_12px_#00f0f0] transition-all">
+<span class="material-symbols-outlined text-2xl">arrow_forward</span>
+</button>
+</div>
+<!-- Soft Drop Button (Down) -->
+<button data-act="soft" class="w-24 h-10 bg-surface-container rounded-lg border border-outline-variant flex items-center justify-center text-on-surface-variant gap-1 shadow-[0_3px_0_#05060b,_inset_0_1px_1px_rgba(255,255,255,0.2)] active:translate-y-0.5 active:shadow-[0_1px_0_#05060b] transition-all">
+<span class="material-symbols-outlined text-lg">arrow_downward</span>
+<span class="text-label-sm font-label-sm font-bold">SOFT</span>
+</button>
+</div>
+<!-- CENTER: Hard Drop Slam Button -->
+<div class="flex flex-col items-center justify-center">
+<button data-act="hard" class="w-14 h-22 py-2 px-1 bg-surface-container-high rounded-xl border-2 border-primary-fixed flex flex-col items-center justify-center text-primary shadow-[0_4px_0_#05060b,_0_0_14px_rgba(0,240,240,0.3),_inset_0_1px_2px_rgba(255,255,255,0.5)] active:translate-y-0.5 active:shadow-[0_1px_0_#05060b,_0_0_24px_#00f0f0] transition-all">
+<span class="material-symbols-outlined text-2xl text-primary-fixed">keyboard_double_arrow_down</span>
+<span class="text-label-sm font-label-sm font-bold text-center leading-tight tracking-tighter text-primary">HARD<br/>DROP</span>
+</button>
+</div>
+<!-- RIGHT CLUSTER: Rotation Actions -->
+<div class="flex flex-col items-center gap-1.5 flex-1">
+<div class="flex gap-2">
+<!-- Counter-Clockwise Rotate (CCW) -->
+<button data-act="ccw" class="w-11 h-11 bg-surface-container rounded-lg border border-secondary/40 flex items-center justify-center text-secondary shadow-[0_3px_0_#05060b,_inset_0_1px_1px_rgba(255,255,255,0.3)] active:translate-y-0.5 active:shadow-[0_1px_0_#05060b,_0_0_12px_#a001f0] transition-all">
+<span class="material-symbols-outlined text-xl">rotate_left</span>
+</button>
+<!-- Primary Clockwise Rotate Button (CW) -->
+<button data-act="cw" class="w-14 h-14 -mt-2 bg-surface-container-high rounded-xl border-2 border-secondary flex flex-col items-center justify-center text-secondary-fixed shadow-[0_4px_0_#05060b,_0_0_16px_rgba(160,1,240,0.4),_inset_0_1px_2px_rgba(255,255,255,0.5)] active:translate-y-0.5 active:shadow-[0_1px_0_#05060b,_0_0_24px_#a001f0] transition-all">
+<span class="material-symbols-outlined text-2xl">rotate_right</span>
+<span class="text-label-sm font-label-sm font-bold text-[8px] leading-none mt-0.5">ROTATE</span>
+</button>
+</div>
+<!-- Hold Piece Trigger -->
+<button data-act="hold" class="w-24 h-9 bg-surface-container rounded-lg border border-outline-variant flex items-center justify-center text-on-surface-variant gap-1 shadow-[0_3px_0_#05060b] active:translate-y-0.5 transition-all">
+<span class="material-symbols-outlined text-base">pan_tool</span>
+<span class="text-label-sm font-label-sm font-bold">SWAP</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Shared Component: BottomNavBar -->
+<!-- Strict active item resolution: "GAME" tab maps directly to active gameplay view -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile py-space-xs bg-surface-container-lowest/90 dark:bg-surface-container-lowest/90 backdrop-blur-lg border-t border-outline-variant/40 dark:border-outline-variant/40 shadow-[0_-4px_24px_rgba(0,0,0,0.8)] rounded-t-xl max-w-md mx-auto left-1/2 -translate-x-1/2">
+<!-- Item 1: GAME (ACTIVE) -->
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary bg-surface-container-high/60 rounded-lg px-space-sm py-1 shadow-[0_0_12px_rgba(0,240,240,0.3)] active:translate-y-0.5 transition-transform duration-75" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">sports_esports</span>
+<span class="text-label-sm font-label-sm tracking-wider">GAME</span>
+</a>
+<!-- Item 2: RANK (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-space-sm py-1 hover:text-primary dark:hover:text-primary hover:bg-surface-container-high/40 active:translate-y-0.5 transition-transform duration-75" href="#">
+<span class="material-symbols-outlined text-xl">leaderboard</span>
+<span class="text-label-sm font-label-sm tracking-wider">RANK</span>
+</a>
+<!-- Item 3: AUDIO (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-space-sm py-1 hover:text-primary dark:hover:text-primary hover:bg-surface-container-high/40 active:translate-y-0.5 transition-transform duration-75" href="#">
+<span class="material-symbols-outlined text-xl">music_note</span>
+<span class="text-label-sm font-label-sm tracking-wider">AUDIO</span>
+</a>
+<!-- Item 4: SETTINGS (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-space-sm py-1 hover:text-primary dark:hover:text-primary hover:bg-surface-container-high/40 active:translate-y-0.5 transition-transform duration-75" href="#">
+<span class="material-symbols-outlined text-xl">tune</span>
+<span class="text-label-sm font-label-sm tracking-wider">SETTINGS</span>
+</a>
+</nav>
+<!-- Interactive Haptic Feedback micro-interaction -->
+<script>
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('touchstart', () => {
+        if (window.navigator && window.navigator.vibrate) {
+          window.navigator.vibrate(15);
+        }
+      });
+    });
+  </script>
+<script>
+(() => {
+  'use strict';
+
+  /* ================= Configuración ================= */
+  const COLS = 10, ROWS = 20;
+  const LOCK_MS = 500;       // tiempo antes de fijar la pieza al tocar el suelo
+  const MAX_RESETS = 15;     // máx. reinicios del lock delay por pieza
+  const $ = id => document.getElementById(id);
+
+  const COLORS = { I: '#00f0f0', O: '#ffd092', T: '#e4b5ff', S: '#6dff9c', Z: '#ff7a70', J: '#7aa2ff', L: '#ffb952' };
+  const SHAPES = {
+    I: [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+    O: [[1,1],[1,1]],
+    T: [[0,1,0],[1,1,1],[0,0,0]],
+    S: [[0,1,1],[1,1,0],[0,0,0]],
+    Z: [[1,1,0],[0,1,1],[0,0,0]],
+    J: [[1,0,0],[1,1,1],[0,0,0]],
+    L: [[0,0,1],[1,1,1],[0,0,0]]
+  };
+
+  // Wall kicks SRS (y hacia arriba; se invierte al aplicarlos)
+  const KICK_JLSTZ = {
+    '01': [[0,0],[-1,0],[-1,1],[0,-2],[-1,-2]], '10': [[0,0],[1,0],[1,-1],[0,2],[1,2]],
+    '12': [[0,0],[1,0],[1,-1],[0,2],[1,2]],     '21': [[0,0],[-1,0],[-1,1],[0,-2],[-1,-2]],
+    '23': [[0,0],[1,0],[1,1],[0,-2],[1,-2]],    '32': [[0,0],[-1,0],[-1,-1],[0,2],[-1,2]],
+    '30': [[0,0],[-1,0],[-1,-1],[0,2],[-1,2]],  '03': [[0,0],[1,0],[1,1],[0,-2],[1,-2]]
+  };
+  const KICK_I = {
+    '01': [[0,0],[-2,0],[1,0],[-2,-1],[1,2]],   '10': [[0,0],[2,0],[-1,0],[2,1],[-1,-2]],
+    '12': [[0,0],[-1,0],[2,0],[-1,2],[2,-1]],   '21': [[0,0],[1,0],[-2,0],[1,-2],[-2,1]],
+    '23': [[0,0],[2,0],[-1,0],[2,1],[-1,-2]],   '32': [[0,0],[-2,0],[1,0],[-2,-1],[1,2]],
+    '30': [[0,0],[1,0],[-2,0],[1,-2],[-2,1]],   '03': [[0,0],[-1,0],[2,0],[-1,2],[2,-1]]
+  };
+  const LINE_POINTS = [0, 100, 300, 500, 800];
+  const LINE_NAMES = ['', 'SINGLE', 'DOUBLE', 'TRIPLE', 'TETRIS!'];
+
+  /* ================= Elementos ================= */
+  const boardEl = $('board'), overlay = $('overlay'), ovTitle = $('ovTitle'), ovSub = $('ovSub'), ovBtn = $('ovBtn');
+  const bannerEl = $('banner'), nextEl = $('nextPreview'), holdEl = $('holdPreview'), holdState = $('holdState');
+  const scoreEl = $('score'), linesEl = $('lines'), levelEl = $('level'), speedEl = $('speedTag'), topEl = $('top');
+  const pauseIcon = $('pauseIcon'), soundIcon = $('soundIcon');
+
+  /* ================= Estado ================= */
+  let board, cur, holdT, holdUsed, bag = [], queue = [];
+  let score, lines, level, topScore = 0;
+  let state = 'ready';       // ready | playing | paused | clearing | over
+  let flashRows = new Set();
+  let dropTime = 0, lockTime = 0, resets = 0, lowestY = 0, last = 0;
+  let bannerTimer = null;
+
+  try { topScore = parseInt(localStorage.getItem('tetris-matrix-top'), 10) || 0; } catch (e) {}
+
+  /* ================= Sonido (WebAudio) ================= */
+  let actx = null, soundOn = true;
+  function tone(freq, dur, delay = 0, type = 'square', vol = 0.04) {
+    const t0 = actx.currentTime + delay;
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, t0);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(actx.destination);
+    o.start(t0); o.stop(t0 + dur + 0.02);
+  }
+  function sfx(name) {
+    if (!soundOn) return;
+    try {
+      if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === 'suspended') actx.resume();
+      switch (name) {
+        case 'move':   tone(220, 0.03); break;
+        case 'rotate': tone(330, 0.05); break;
+        case 'hold':   tone(440, 0.06, 0, 'triangle'); break;
+        case 'lock':   tone(110, 0.09, 0, 'triangle', 0.08); break;
+        case 'clear':  [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.1, i * 0.06)); break;
+        case 'over':   [392, 330, 262, 196].forEach((f, i) => tone(f, 0.22, i * 0.18, 'sawtooth')); break;
+      }
+    } catch (e) {}
+  }
+
+  /* ================= Utilidades ================= */
+  const fmt6 = n => String(n).padStart(6, '0').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const emptyBoard = () => Array.from({ length: ROWS }, () => new Array(COLS).fill(null));
+  const gravityMs = () => Math.max(60, 800 * Math.pow(0.85, level - 1));
+
+  function nextType() {
+    if (!bag.length) {
+      bag = Object.keys(SHAPES);
+      for (let i = bag.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [bag[i], bag[j]] = [bag[j], bag[i]];
+      }
+    }
+    return bag.pop();
+  }
+
+  function rotMat(m, dir) {
+    const n = m.length, o = Array.from({ length: n }, () => new Array(n).fill(0));
+    for (let r = 0; r < n; r++)
+      for (let c = 0; c < n; c++)
+        o[r][c] = dir > 0 ? m[n - 1 - c][r] : m[c][n - 1 - r];
+    return o;
+  }
+
+  function collides(m, x, y) {
+    for (let r = 0; r < m.length; r++)
+      for (let c = 0; c < m.length; c++) {
+        if (!m[r][c]) continue;
+        const nx = x + c, ny = y + r;
+        if (nx < 0 || nx >= COLS || ny >= ROWS) return true;
+        if (ny >= 0 && board[ny][nx]) return true;
+      }
+    return false;
+  }
+  const grounded = () => collides(cur.m, cur.x, cur.y + 1);
+
+  /* ================= Render ================= */
+  const cells = [], keys = new Array(COLS * ROWS).fill('');
+  for (let i = 0; i < COLS * ROWS; i++) {
+    const d = document.createElement('div');
+    d.className = 'c';
+    boardEl.appendChild(d);
+    cells.push(d);
+  }
+
+  function paint(i, key) {
+    if (keys[i] === key) return;
+    keys[i] = key;
+    const d = cells[i];
+    if (!key) { d.className = 'c'; d.style.removeProperty('--c'); return; }
+    if (key === 'x') { d.className = 'c fl'; d.style.removeProperty('--c'); return; }
+    d.className = key[0] === 'f' ? 'c f mino' : 'c g';
+    d.style.setProperty('--c', COLORS[key[1]]);
+  }
+
+  function ghostY() {
+    let y = cur.y;
+    while (!collides(cur.m, cur.x, y + 1)) y++;
+    return y;
+  }
+
+  function render() {
+    const grid = new Array(COLS * ROWS).fill('');
+    for (let r = 0; r < ROWS; r++)
+      for (let c = 0; c < COLS; c++) {
+        const v = board[r][c];
+        if (v) grid[r * COLS + c] = flashRows.has(r) ? 'x' : 'f' + v;
+      }
+    if (cur && state === 'playing') {
+      const gy = ghostY();
+      for (let r = 0; r < cur.m.length; r++)
+        for (let c = 0; c < cur.m.length; c++) {
+          if (!cur.m[r][c]) continue;
+          const x = cur.x + c;
+          const yg = gy + r, yc = cur.y + r;
+          if (gy !== cur.y && yg >= 0 && !grid[yg * COLS + x]) grid[yg * COLS + x] = 'g' + cur.t;
+          if (yc >= 0) grid[yc * COLS + x] = 'f' + cur.t;
+        }
+    }
+    for (let i = 0; i < grid.length; i++) paint(i, grid[i]);
+  }
+
+  function drawMini(el, t, size, dim) {
+    el.innerHTML = '';
+    if (!t) return;
+    const m = SHAPES[t];
+    let r0 = 9, r1 = -1, c0 = 9, c1 = -1;
+    m.forEach((row, r) => row.forEach((v, c) => {
+      if (v) { r0 = Math.min(r0, r); r1 = Math.max(r1, r); c0 = Math.min(c0, c); c1 = Math.max(c1, c); }
+    }));
+    el.style.display = 'grid';
+    el.style.gridTemplateColumns = `repeat(${c1 - c0 + 1}, ${size}px)`;
+    el.style.gridAutoRows = size + 'px';
+    el.style.gap = '2px';
+    el.style.opacity = dim ? '0.35' : '1';
+    const col = COLORS[t];
+    for (let r = r0; r <= r1; r++)
+      for (let c = c0; c <= c1; c++) {
+        const d = document.createElement('div');
+        if (m[r][c]) {
+          d.className = 'mino';
+          d.style.cssText = `background:${col};border:1px solid rgba(255,255,255,.5);box-shadow:0 0 6px ${col};`;
+        }
+        el.appendChild(d);
+      }
+  }
+
+  function updateHUD() {
+    scoreEl.textContent = fmt6(score);
+    linesEl.textContent = lines;
+    levelEl.textContent = String(level).padStart(2, '0');
+    speedEl.textContent = level < 4 ? 'SLOW' : level < 7 ? 'NORMAL' : level < 10 ? 'FAST' : 'MAX SPD';
+    topEl.textContent = fmt6(Math.max(topScore, score));
+  }
+
+  function updateHold() {
+    drawMini(holdEl, holdT, 13, holdUsed);
+    holdState.textContent = holdUsed ? 'LOCKED' : 'READY';
+  }
+
+  function showBanner(text) {
+    bannerEl.textContent = text;
+    bannerEl.classList.add('show');
+    clearTimeout(bannerTimer);
+    bannerTimer = setTimeout(() => bannerEl.classList.remove('show'), 800);
+  }
+
+  function showOverlay(title, sub, btn) {
+    ovTitle.textContent = title;
+    ovSub.innerHTML = sub;
+    ovBtn.textContent = btn;
+    overlay.classList.remove('hide');
+  }
+  const hideOverlay = () => { overlay.classList.add('hide'); if (document.activeElement) document.activeElement.blur(); };
+
+  /* ================= Lógica del juego ================= */
+  function spawn(type) {
+    let t = type;
+    if (!t) { t = queue.shift(); queue.push(nextType()); }
+    const m = SHAPES[t].map(r => r.slice());
+    cur = { t, m, rot: 0, x: Math.floor((COLS - m.length) / 2), y: t === 'I' ? -1 : 0 };
+    dropTime = 0; lockTime = 0; resets = 0; lowestY = cur.y;
+    drawMini(nextEl, queue[0], 14);
+    if (collides(cur.m, cur.x, cur.y)) gameOver();
+  }
+
+  function afterMove() {
+    if (cur.y > lowestY) { lowestY = cur.y; resets = 0; }
+    if (grounded()) {
+      if (resets < MAX_RESETS) { lockTime = 0; resets++; }
+    } else {
+      lockTime = 0;
+    }
+  }
+
+  function move(dx) {
+    if (!collides(cur.m, cur.x + dx, cur.y)) { cur.x += dx; afterMove(); sfx('move'); }
+  }
+
+  function softDrop() {
+    if (!collides(cur.m, cur.x, cur.y + 1)) {
+      cur.y++; score += 1; dropTime = 0; afterMove(); updateHUD();
+    }
+  }
+
+  function hardDrop() {
+    let d = 0;
+    while (!collides(cur.m, cur.x, cur.y + 1)) { cur.y++; d++; }
+    score += d * 2;
+    lockPiece();
+  }
+
+  function rotate(dir) {
+    if (cur.t === 'O') return;
+    const to = (cur.rot + dir + 4) % 4;
+    const nm = rotMat(cur.m, dir);
+    const kicks = (cur.t === 'I' ? KICK_I : KICK_JLSTZ)['' + cur.rot + to];
+    for (const [kx, ky] of kicks) {
+      const nx = cur.x + kx, ny = cur.y - ky;
+      if (!collides(nm, nx, ny)) {
+        cur.m = nm; cur.rot = to; cur.x = nx; cur.y = ny;
+        afterMove(); sfx('rotate');
+        return;
+      }
+    }
+  }
+
+  function hold() {
+    if (holdUsed) return;
+    const t = cur.t, prev = holdT;
+    holdT = t;
+    spawn(prev);      // si no había pieza guardada, toma la siguiente de la cola
+    holdUsed = true;
+    updateHold();
+    sfx('hold');
+  }
+
+  function lockPiece() {
+    let overTop = false;
+    for (let r = 0; r < cur.m.length; r++)
+      for (let c = 0; c < cur.m.length; c++) {
+        if (!cur.m[r][c]) continue;
+        const x = cur.x + c, y = cur.y + r;
+        if (y < 0) overTop = true; else board[y][x] = cur.t;
+      }
+    sfx('lock');
+    cur = null;
+    updateHUD();
+    if (overTop) return gameOver();
+
+    const full = [];
+    for (let r = 0; r < ROWS; r++) if (board[r].every(Boolean)) full.push(r);
+
+    if (!full.length) { holdUsed = false; updateHold(); spawn(); return; }
+
+    state = 'clearing';
+    flashRows = new Set(full);
+    sfx('clear');
+    showBanner(LINE_NAMES[full.length]);
+    setTimeout(() => {
+      board = board.filter((_, i) => !flashRows.has(i));
+      while (board.length < ROWS) board.unshift(new Array(COLS).fill(null));
+      flashRows = new Set();
+      const n = full.length, oldLevel = level;
+      score += LINE_POINTS[n] * level;
+      lines += n;
+      level = Math.floor(lines / 10) + 1;
+      if (level > oldLevel) showBanner('LEVEL ' + level);
+      updateHUD();
+      holdUsed = false; updateHold();
+      state = 'playing';
+      spawn();
+    }, 260);
+  }
+
+  function gameOver() {
+    state = 'over';
+    sfx('over');
+    let record = false;
+    if (score > topScore) {
+      topScore = score; record = true;
+      try { localStorage.setItem('tetris-matrix-top', String(topScore)); } catch (e) {}
+    }
+    updateHUD();
+    showOverlay('GAME OVER', 'SCORE ' + fmt6(score) + (record ? '<br>NEW RECORD!' : ''), 'RETRY');
+  }
+
+  function startGame() {
+    board = emptyBoard();
+    score = 0; lines = 0; level = 1;
+    holdT = null; holdUsed = false; bag = [];
+    queue = [nextType(), nextType()];
+    flashRows = new Set();
+    bannerEl.classList.remove('show');
+    state = 'playing';
+    hideOverlay();
+    updateHUD(); updateHold();
+    spawn();
+    last = performance.now();
+  }
+
+  function pause() {
+    if (state !== 'playing') return;
+    state = 'paused';
+    pauseIcon.textContent = 'play_arrow';
+    showOverlay('PAUSED', 'TAKE A BREAK', 'RESUME');
+  }
+  function resume() {
+    if (state !== 'paused') return;
+    state = 'playing';
+    pauseIcon.textContent = 'pause';
+    hideOverlay();
+    last = performance.now();
+  }
+  const togglePause = () => (state === 'playing' ? pause() : resume());
+  const primary = () => {
+    if (state === 'ready' || state === 'over') startGame();
+    else if (state === 'paused') resume();
+  };
+
+  /* ================= Bucle principal ================= */
+  function frame(t) {
+    requestAnimationFrame(frame);
+    const dt = Math.min(100, t - last);
+    last = t;
+    if (state === 'playing' && cur) {
+      if (!grounded()) {
+        lockTime = 0;
+        dropTime += dt;
+        const g = gravityMs();
+        while (dropTime >= g && !grounded()) { cur.y++; dropTime -= g; }
+        if (cur.y > lowestY) { lowestY = cur.y; resets = 0; }
+      } else {
+        dropTime = 0;
+        lockTime += dt;
+        if (lockTime >= LOCK_MS) lockPiece();
+      }
+    }
+    render();
+  }
+
+  /* ================= Controles ================= */
+  const ACTIONS = {
+    left: () => move(-1), right: () => move(1), soft: softDrop,
+    hard: hardDrop, cw: () => rotate(1), ccw: () => rotate(-1), hold
+  };
+  const REPEATABLE = new Set(['left', 'right', 'soft']);
+  const run = act => { if (state === 'playing' && cur) ACTIONS[act](); };
+
+  // Botones en pantalla (con repetición al mantener pulsado)
+  document.querySelectorAll('[data-act]').forEach(btn => {
+    const act = btn.dataset.act;
+    let delay = null, rep = null;
+    const stop = () => { clearTimeout(delay); clearInterval(rep); delay = rep = null; };
+    btn.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      try { btn.setPointerCapture(e.pointerId); } catch (err) {}
+      stop();
+      run(act);
+      if (REPEATABLE.has(act)) {
+        delay = setTimeout(() => { rep = setInterval(() => run(act), act === 'soft' ? 45 : 60); }, 170);
+      }
+    });
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => btn.addEventListener(ev, stop));
+    btn.addEventListener('contextmenu', e => e.preventDefault());
+  });
+
+  // Teclado
+  const KEYMAP = {
+    ArrowLeft: 'left', a: 'left', ArrowRight: 'right', d: 'right', ArrowDown: 'soft', s: 'soft',
+    ArrowUp: 'cw', w: 'cw', x: 'cw', z: 'ccw', ' ': 'hard', c: 'hold', Shift: 'hold'
+  };
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    if (k === 'p' || k === 'Escape') { e.preventDefault(); if (!e.repeat) togglePause(); return; }
+    if (k === 'Enter' || (k === ' ' && state !== 'playing' && state !== 'clearing')) {
+      e.preventDefault(); if (!e.repeat) primary(); return;
+    }
+    const act = KEYMAP[k];
+    if (!act) return;
+    e.preventDefault();
+    if (e.repeat && !REPEATABLE.has(act)) return;
+    run(act);
+  });
+
+  // Overlay, pausa y sonido
+  ovBtn.addEventListener('click', primary);
+  $('btnPause').addEventListener('click', e => { e.currentTarget.blur(); togglePause(); });
+  $('btnSound').addEventListener('click', e => {
+    e.currentTarget.blur();
+    soundOn = !soundOn;
+    soundIcon.textContent = soundOn ? 'volume_up' : 'volume_off';
+    if (soundOn) sfx('move');
+  });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+
+  /* ================= Inicio ================= */
+  board = emptyBoard();
+  score = 0; lines = 0; level = 1; holdT = null; holdUsed = false;
+  queue = [nextType(), nextType()];
+  drawMini(nextEl, queue[0], 14);
+  updateHUD(); updateHold();
+  showOverlay('TETRIS // MATRIX',
+    '← → MOVE · ↓ SOFT<br>↑ / X ROTATE · Z CCW<br>SPACE DROP · C HOLD<br>P PAUSE',
+    'START');
+  requestAnimationFrame(t => { last = t; frame(t); });
+})();
+</script>
+</body></html>
